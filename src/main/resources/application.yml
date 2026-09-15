@@ -1,0 +1,25 @@
+server:
+  port: 8083
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/oa_db?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf-8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.test.oabackend.domain
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+file:
+  upload-dir: D:/IDEAProject/oa-backend/uploads
+  base-url: http://localhost:8083
+logging:
+  level:
+    com.test.oabackend.dao: DEBUG

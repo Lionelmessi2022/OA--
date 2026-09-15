@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.test.oabackend.dao.EmpMapper">
+    <sql id="empColumns">
+        e.*, d.name AS dept_name, j.name AS job_name
+    </sql>
+
+    <sql id="empFrom">
+        from emp e
+        left join dept d on e.dept_id = d.id
+        left join job j on e.job_id = j.id
+    </sql>
+
+    <sql id="empWhere">
+    <where>
+        <if test="name != null and name != ''">
+            and e.name like concat('%', #{name}, '%')
+        </if>
+        <if test="deptId != null">
+            and e.dept_id = #{deptId}
+        </if>
+        <if test="jobId != null">
+            and e.job_id = #{jobId}
+        </if>
+        <if test="startDate != null and startDate != ''">
+            and e.hire_date &gt;= #{startDate}
+        </if>
+        <if test="endDate != null and endDate != ''">
+            and e.hire_date &lt;= #{endDate}
+        </if>
+    </where>
+    </sql>
+
+    <select id="selectPage" parameterType="com.test.oabackend.domain.EmpQuery" resultType="Emp">
+        select <include refid="empColumns"/>
+        <include refid="empFrom"/>
+        <include refid="empWhere"/>
+        order by e.id
+        limit #{offset}, #{pageSize}
+    </select>
+
+    <select id="countByQuery" parameterType="com.test.oabackend.domain.EmpQuery" resultType="long">
+        select count(*)
+        from emp e
+        <include refid="empWhere"/>
+    </select>
+
+<select id="selectById" parameterType="long" resultType="Emp">
+select <include refid="empColumns"/>
+<include refid="empFrom"/>
+where e.id = #{id}
+</select>
+
+<select id="selectByUsername" parameterType="string" resultType="Emp">
+select <include refid="empColumns"/>
+<include refid="empFrom"/>
+where e.username = #{username}
+</select>
+<insert id="insert" parameterType="Emp" useGeneratedKeys="true" keyProperty="id">
+insert into oa_db.emp (emp_no, username, password, name, gender, phone, email,
+                 avatar, dept_id, job_id, hire_date, role, status)
+values (#{empNo}, #{username}, #{password}, #{name}, #{gender}, #{phone}, #{email},
+        #{avatar}, #{deptId}, #{jobId}, #{hireDate}, #{role}, #{status})
+</insert>
+<update id="update" parameterType="Emp">
+update emp
+<set>
+    <if test="name != null">name = #{name},</if>
+    <if test="gender != null">gender = #{gender},</if>
+    <if test="phone != null">phone = #{phone},</if>
+    <if test="email != null">email = #{email},</if>
+    <if test="deptId != null">dept_id = #{deptId},</if>
+    <if test="jobId != null">job_id = #{jobId},</if>
+    <if test="hireDate != null">hire_date = #{hireDate},</if>
+</set>
+where id = #{id}
+</update>
+
+<delete id="deleteById" parameterType="long">
+delete from oa_db.emp where id = #{id}
+</delete>
+
+<delete id="deleteBatch">
+delete from emp where id in
+<foreach collection="ids" item="id" open="(" separator="," close=")">
+    #{id}
+</foreach>
+</delete>
+
+<update id="updateStatus">
+update oa_db.emp set status = #{status} where id = #{id}
+</update>
+
+<select id="maxEmpNoSeq" resultType="int">
+select IFNULL(MAX(CAST(SUBSTRING(emp_no, 4) AS UNSIGNED)), 0) from oa_db.emp
+</select>
+
+<update id="updateAvatar">
+update oa_db.emp set avatar = #{avatar} where id = #{id}
+</update>
+
+<update id="updatePassword">
+update oa_db.emp set password = #{password} where id = #{id}
+</update>
+
+
+</mapper>

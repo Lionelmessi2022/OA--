@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.oabackend.dao.JobMapper">
+    <select id="selectPage" parameterType="com.test.oabackend.common.CommonQuery" resultType="Job">
+        select * from job
+        <where>
+            <if test="name !=null and name != ''">
+                name like concat('%',#{name},'%')
+            </if>
+        </where>
+        order by id
+        limit #{offset},#{pageSize}
+    </select>
+    
+    <select id="countByQuery" parameterType="com.test.oabackend.common.CommonQuery" resultType="long">
+        select count(*) from job
+        <where>
+        <if test="name !=null and name !=''">
+            name like concat('%',#{name},'%')
+        </if>
+        </where>
+    </select>
+
+    <select id="selectAll" resultType="Job">
+        select * from oa_db.job
+    </select>
+
+    <select id="selectById" parameterType="long" resultType="Job">
+        select * from oa_db.job where id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="Job" useGeneratedKeys="true" keyProperty="id">
+        insert into oa_db.job (name, sort) values (#{name}, #{sort})
+    </insert>
+
+    <update id="update" parameterType="Job">
+        update Job
+        <set>
+            <if test="name !=null">
+                name = #{name},
+            </if>
+            <if test="sort !=null">
+                sort = #{sort},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="long">
+        delete from oa_db.job where id = #{id}
+    </delete>
+
+    <select id="countEmpByJobId" parameterType="long" resultType="long">
+        select count(*) from oa_db.emp where job_id = #{jobId}
+    </select>
+</mapper>

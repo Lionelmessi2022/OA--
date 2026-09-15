@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.oabackend.dao.DeptMapper">
+    <select id="selectPage" parameterType="com.test.oabackend.common.CommonQuery" resultType="Dept">
+        select * from dept
+        <where>
+            <if test="name != null and name != ''">
+                name like concat('%', #{name}, '%')
+            </if>
+        </where>
+        order by id
+        limit #{offset}, #{pageSize}
+    </select>
+    <select id="countByQuery" parameterType="com.test.oabackend.common.CommonQuery" resultType="long">
+        select count(*) from dept
+        <where>
+            <if test="name != null and name != ''">
+                name like concat('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="selectAll" resultType="Dept">
+        select * from oa_db.dept order by id
+    </select>
+
+    <select id="selectById" parameterType="long" resultType="Dept">
+        select * from oa_db.dept where id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="Dept" useGeneratedKeys="true" keyProperty="id">
+        insert into oa_db.dept (name,description) values (#{name},#{description})
+    </insert>
+
+    <delete id="deleteById" parameterType="long">
+        delete from oa_db.dept where id = #{id}
+    </delete>
+
+    <update id="update" parameterType="Dept" >
+        update dept
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="description != null">description = #{description},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="countEmpByDeptId" parameterType="long" resultType="long">
+        select count(*) from oa_db.emp where dept_id = #{deptId}
+    </select>
+
+</mapper>
