@@ -1,6 +1,25 @@
 server:
   port: 8083
 spring:
+  ai:
+    openai:
+      # 小米 MiMo 控制台申请的 API Key，建议放环境变量 MIMO_API_KEY，避免提交到 Git
+      api-key: ${MIMO_API_KEY}
+      # 只填到域名，Spring AI 会自动拼接 /v1/chat/completions
+      base-url: https://api.xiaomimimo.com
+      chat:
+        completions-path: /v1/chat/completions
+        options:
+          # 可选：mimo-v2.5-pro（旗舰，1M 上下文，支持推理）
+          #      mimo-v2.5    （多模态，支持图文输入）
+          #      mimo-v2-flash（轻量快速）
+          model: mimo-v2.5-pro
+          temperature: 0.7
+          max-tokens: 4096
+          # MiMo V2.5 默认开启思考模式，如不需要可在请求里传 enable_thinking=false
+          # Spring AI 暂不支持顶层透传该参数，可通过 OpenAiChatOptions.builder() 在代码中设置
+
+      # MiMo 不提供 embedding 接口，如需向量能力请单独接入其他厂商（如阿里 dashscope、OpenAI、本地 BGE 等）
   datasource:
     url: jdbc:mysql://localhost:3306/oa_db?useSSL=false&serverTimezone=Asia/Shanghai&characterEncoding=utf-8
     username: root
@@ -18,7 +37,7 @@ mybatis:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 file:
-  upload-dir: D:/IDEAProject/oa-backend/backend/uploads
+  upload-dir: D:/IDEAProject/oa-backend/uploads
   base-url: http://localhost:8083
 logging:
   level:
