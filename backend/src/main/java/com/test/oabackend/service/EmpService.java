@@ -10,6 +10,8 @@ public interface EmpService {
 
     PageResult<Emp> page(EmpQuery query);
 
+    Long count(EmpQuery query);
+
     Emp get(Long id);
 
     void add(Emp emp);

@@ -29,6 +29,11 @@ public class EmpServiceImpl implements EmpService {
     }
 
     @Override
+    public Long count(EmpQuery query) {
+        return empMapper.countByQuery(query);
+    }
+
+    @Override
     public Emp get(Long id) {
         Emp emp = empMapper.selectById(id);
         if(emp == null){
