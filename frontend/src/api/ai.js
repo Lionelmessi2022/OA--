@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 // Send AI chat message and get response
 export function sendAiMessage(data) {
-  return request.post('/ai/chat', data)
+  return request.post('/ai/chat', data， { timeout: 120000 })
 }
 
 // Get chat history
